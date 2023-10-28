@@ -1,0 +1,73 @@
+1- cree una funcion que puedo usar para refactoruzar 
+
+const buildMakePerson = ({getUUID, getAge}) => {
+   return ({ name, birthDate }) => {
+        return {
+          id: getUUID(),
+          name: name,
+          birthDate: birthDate,
+          age: getAge(birthDate),
+        };
+      };
+      
+}
+
+- me pide lo que usara para implementar el id y lo que usara para implementar la edad 
+- hice una carpeta llamad plugins donde instancion con rquire los plugins que me daran el id y la edad
+- lo hic asi con el proposito que si mañana ocupo otro plugin lo cambio aca y no en toda la app 
+- la funcuion pide el cumpleaños y usa el plugin indicado
+
+    const getAgePlugin = require("get-age");
+
+    const getAge = (birthDate) => {
+    if (!birthDate) return new Error("birthDate is required");
+
+    return getAgePlugin(birthDate);
+    };
+
+    module.exports = {
+    getAge,
+    };
+
+- lo mismo para la edad en otro archivo 
+
+  
+    const getAgePlugin = require("get-age");
+
+    const getAge = (birthDate) => {
+    if (!birthDate) return new Error("birthDate is required");
+
+    return getAgePlugin(birthDate);
+    };
+
+    module.exports = {
+    getAge,
+    };
+
+- luego en app.js instancio los plugin, intancio el objeto, y llamo a la funncion factory 
+
+    const {getUUID, getAge} = require('./plugins')
+
+    const {buildMakePerson} = require("./js-foundation/05-factory");
+
+- defino una contante para instanciar la funcion fctory y le paso los plugin que necesita 
+  que llamo desde mi archiv de barril de plugins
+
+
+    const makePerson = buildMakePerson({getUUID, getAge});
+
+- a su vez esa funcion factory necesita los otros argumentos para funcionar que son el nombre y el cumpleaños
+- instancio a mi nuevo objeto y la igualo a la funcion que a su vez le paso el objeto que serviara para crear a la persona
+
+
+    const obj = {
+    name: "Jhon",
+    birthDate: "1985-10-12",
+    };
+
+- le puedo pasar el objeto asi por quye en la funcion definida destructuro los dartos en name y birthDate y
+
+    const jhon = makePerson(obj);
+
+    console.log(jhon);
+
